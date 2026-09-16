@@ -1,0 +1,13 @@
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.idea/
+*.iml
+.vscode/
+android/local.properties
+ios/Flutter/Flutter.podspec
+ios/Pods/
+lib/firebase_options.dart
+*.g.dart
