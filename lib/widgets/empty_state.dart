@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
 
 class EmptyState extends StatelessWidget {
@@ -28,7 +29,11 @@ class EmptyState extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(AppTheme.space(3)),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.08),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [theme.colorScheme.primary.withValues(alpha: 0.16), AppColors.gold.withValues(alpha: 0.08)],
+              ),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 40, color: theme.colorScheme.primary),
