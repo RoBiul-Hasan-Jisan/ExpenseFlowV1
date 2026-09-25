@@ -60,7 +60,7 @@ class TransactionCard extends StatelessWidget {
               ),
               Text(
                 '$sign${CurrencyFormatter.format(transaction.amount, currency)}',
-                style: theme.textTheme.titleSmall?.copyWith(color: amountColor, fontWeight: FontWeight.w700),
+                style: AppTheme.amountStyle(size: 15, color: amountColor, weight: FontWeight.w700),
               ),
             ],
           ),
