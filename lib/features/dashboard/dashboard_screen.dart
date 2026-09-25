@@ -19,6 +19,7 @@ import '../../widgets/budget_card.dart';
 import '../../widgets/chart_card.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/loading_state.dart';
+import '../../widgets/glass_surface.dart';
 import '../../widgets/summary_card.dart';
 import '../../widgets/transaction_card.dart';
 
@@ -140,32 +141,70 @@ class _BalanceCard extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(AppTheme.space(3)),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [AppColors.primary, AppColors.primaryDark], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: AppColors.heroGradient,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        boxShadow: [
+          BoxShadow(color: AppColors.primary.withValues(alpha: 0.28), blurRadius: 24, offset: const Offset(0, 12)),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
         children: [
-          Text('Total Balance', style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
-          SizedBox(height: AppTheme.space(1)),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              CurrencyFormatter.format(balance, currency),
-              style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.w700, letterSpacing: -0.5),
+          const Positioned.fill(child: MeshDots(color: Colors.white)),
+          Positioned(
+            top: -40,
+            right: -30,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.gold.withValues(alpha: 0.16)),
             ),
           ),
-          SizedBox(height: AppTheme.space(1)),
-          Row(
-            children: [
-              Icon(positive ? Icons.trending_up_rounded : Icons.trending_down_rounded, color: Colors.white, size: 16),
-              const SizedBox(width: 4),
-              Text('${positive ? '+' : ''}${changePct.toStringAsFixed(1)}% this month',
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 12, fontWeight: FontWeight.w600)),
-            ],
+          Padding(
+            padding: EdgeInsets.all(AppTheme.space(3)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Balance', style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, fontWeight: FontWeight.w600)),
+                    Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), shape: BoxShape.circle),
+                      child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.gold, size: 16),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppTheme.space(1)),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    CurrencyFormatter.format(balance, currency),
+                    style: AppTheme.amountStyle(size: 36, color: Colors.white),
+                  ),
+                ),
+                SizedBox(height: AppTheme.space(1.5.round())),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: (positive ? AppColors.primaryLight : AppColors.expense).withValues(alpha: 0.22),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusPill),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(positive ? Icons.trending_up_rounded : Icons.trending_down_rounded, color: Colors.white, size: 15),
+                      const SizedBox(width: 4),
+                      Text('${positive ? '+' : ''}${changePct.toStringAsFixed(1)}% this month',
+                          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -399,7 +438,7 @@ class _FinancialHealthCard extends ConsumerWidget {
               children: [
                 Text('Financial Health', style: theme.textTheme.titleSmall),
                 const Spacer(),
-                Text('${health.score}', style: theme.textTheme.headlineSmall?.copyWith(color: scoreColor)),
+                Text('${health.score}', style: AppTheme.amountStyle(size: 22, color: scoreColor)),
                 Text(' / 100', style: theme.textTheme.bodySmall),
               ],
             ),
