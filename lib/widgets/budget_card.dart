@@ -49,17 +49,29 @@ class BudgetCard extends StatelessWidget {
                     SizedBox(width: AppTheme.space(1.5.round())),
                   ],
                   Expanded(child: Text(title, style: theme.textTheme.titleSmall)),
-                  Text('$pct%', style: theme.textTheme.titleSmall?.copyWith(color: color, fontWeight: FontWeight.w700)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                    decoration: BoxDecoration(color: color.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(AppTheme.radiusPill)),
+                    child: Text('$pct%', style: theme.textTheme.labelLarge?.copyWith(color: color, fontWeight: FontWeight.w800)),
+                  ),
                 ],
               ),
-              SizedBox(height: AppTheme.space(1.25.round())),
+              SizedBox(height: AppTheme.space(1.5.round())),
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
-                child: LinearProgressIndicator(
-                  value: progress.fraction.clamp(0, 1).toDouble(),
-                  minHeight: 8,
-                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                  valueColor: AlwaysStoppedAnimation(color),
+                child: Stack(
+                  children: [
+                    Container(height: 9, color: theme.colorScheme.surfaceContainerHighest),
+                    FractionallySizedBox(
+                      widthFactor: progress.fraction.clamp(0, 1).toDouble(),
+                      child: Container(
+                        height: 9,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(colors: [color.withValues(alpha: 0.7), color]),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: AppTheme.space(1)),
@@ -74,7 +86,7 @@ class BudgetCard extends StatelessWidget {
                     progress.remaining >= 0
                         ? '${CurrencyFormatter.format(progress.remaining, currency)} left'
                         : '${CurrencyFormatter.format(progress.remaining.abs(), currency)} over',
-                    style: theme.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w600),
+                    style: theme.textTheme.bodySmall?.copyWith(color: color, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
