@@ -15,8 +15,13 @@ class CategoryIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.withValues(alpha: 0.22), color.withValues(alpha: 0.1)],
+        ),
         shape: BoxShape.circle,
+        border: Border.all(color: color.withValues(alpha: 0.18)),
       ),
       child: Icon(icon, color: color, size: size * 0.5),
     );
