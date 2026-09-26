@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for the app to reach the ExpenseFlow backend API and
+         Firebase Auth. Debug/profile builds get this for free from
+         android/app/src/debug/ and .../profile/ AndroidManifest.xml, but
+         release builds (flutter build apk with the release flag) only use
+         this file, so it must be declared here too. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="expenseflow"
         android:name="${applicationName}"

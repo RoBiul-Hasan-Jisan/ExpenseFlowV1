@@ -3,6 +3,9 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Reads android/app/google-services.json and makes those values
+    // (Firebase project config) available to the Firebase SDKs at build time.
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -48,4 +51,11 @@ dependencies {
     // Required because flutter_local_notifications uses java.time APIs that
     // need to be desugared for apps targeting below Android 8 (API 26).
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // Import the Firebase BoM so any Firebase Android libraries pulled in
+    // transitively by the firebase_core/firebase_auth Flutter plugins
+    // resolve to mutually compatible versions. The FlutterFire plugins
+    // themselves declare the actual firebase-auth/firebase-common native
+    // dependencies, so nothing else needs adding here.
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
 }
