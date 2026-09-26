@@ -20,7 +20,12 @@ class ProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: ListView(
-        padding: EdgeInsets.all(AppTheme.space(2)),
+        padding: EdgeInsets.fromLTRB(
+          AppTheme.space(2),
+          AppTheme.space(2),
+          AppTheme.space(2),
+          AppTheme.space(2) + MediaQuery.of(context).padding.bottom + 100,
+        ),
         children: [
           Center(
             child: Column(

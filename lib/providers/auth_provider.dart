@@ -39,7 +39,9 @@ class SessionNotifier extends StateNotifier<SessionState> {
   Future<void> _init() async {
     final demoActive = await _repo.isDemoMode();
     if (_repo.isAuthenticated) {
-      state = SessionState(status: SessionStatus.authenticated, user: null);
+      // AuthService.init() (called at app startup in main.dart) already
+      // synced the MongoDB profile if a Firebase session was persisted.
+      state = SessionState(status: SessionStatus.authenticated, user: _repo.cachedUser);
     } else if (demoActive) {
       final demoUser = await _repo.enterDemoMode();
       state = SessionState(status: SessionStatus.demo, user: demoUser);

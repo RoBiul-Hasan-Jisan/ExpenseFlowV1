@@ -15,6 +15,11 @@ class AuthRepository {
 
   bool get isAuthenticated => _authService.currentUser != null;
 
+  /// The MongoDB-backed profile for the currently signed-in Firebase user,
+  /// if it's already been fetched (e.g. by AuthService.init() at app
+  /// startup, or by a prior signIn/register call this session).
+  UserModel? get cachedUser => _authService.currentUserModel;
+
   Future<UserModel> signIn({required String email, required String password}) =>
       _authService.signIn(email: email, password: password);
 

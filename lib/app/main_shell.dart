@@ -36,14 +36,24 @@ class MainShell extends StatelessWidget {
       body: child,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
+<<<<<<< Updated upstream
         width: 62,
         height: 62,
         margin: const EdgeInsets.only(top: 26),
+=======
+        width: 54,
+        height: 54,
+        margin: const EdgeInsets.only(top: 14),
+>>>>>>> Stashed changes
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: AppColors.primaryGradient,
           boxShadow: [
+<<<<<<< Updated upstream
             BoxShadow(color: AppColors.primary.withValues(alpha: 0.45), blurRadius: 20, offset: const Offset(0, 8)),
+=======
+            BoxShadow(color: AppColors.primary.withValues(alpha: 0.45), blurRadius: 16, offset: const Offset(0, 6)),
+>>>>>>> Stashed changes
           ],
         ),
         child: Material(
@@ -52,7 +62,11 @@ class MainShell extends StatelessWidget {
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: () => context.push('/add-transaction'),
+<<<<<<< Updated upstream
             child: const Icon(Icons.add_rounded, color: Colors.white, size: 30),
+=======
+            child: const Icon(Icons.add_rounded, color: Colors.white, size: 26),
+>>>>>>> Stashed changes
           ),
         ),
       ),
@@ -68,6 +82,7 @@ class MainShell extends StatelessWidget {
           child: SizedBox(
             height: 56,
             child: Row(
+<<<<<<< Updated upstream
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 for (var i = 0; i < _tabs.length; i++) ...[
@@ -80,10 +95,93 @@ class MainShell extends StatelessWidget {
                     onTap: () => context.go(_tabs[i]),
                   ),
                 ],
+=======
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      _NavItem(
+                        outline: _icons[0].$1,
+                        filled: _icons[0].$2,
+                        label: _icons[0].$3,
+                        selected: currentIndex == 0,
+                        onTap: () => context.go(_tabs[0]),
+                      ),
+                      _NavItem(
+                        outline: _icons[1].$1,
+                        filled: _icons[1].$2,
+                        label: _icons[1].$3,
+                        selected: currentIndex == 1,
+                        onTap: () => context.go(_tabs[1]),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 64),
+                Expanded(
+                  child: Row(
+                    children: [
+                      for (var i = 2; i < _tabs.length; i++)
+                        _NavItem(
+                          outline: _icons[i].$1,
+                          filled: _icons[i].$2,
+                          label: _icons[i].$3,
+                          selected: currentIndex == i,
+                          onTap: () => context.go(_tabs[i]),
+                        ),
+                    ],
+                  ),
+                ),
+>>>>>>> Stashed changes
               ],
             ),
           ),
         ),
+<<<<<<< Updated upstream
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData outline;
+  final IconData filled;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _NavItem({required this.outline, required this.filled, required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = selected ? theme.colorScheme.primary : theme.textTheme.bodySmall?.color;
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.radiusPill),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            color: selected ? theme.colorScheme.primary.withValues(alpha: 0.12) : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppTheme.radiusPill),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(selected ? filled : outline, color: color, size: 22),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(fontSize: 10, fontWeight: selected ? FontWeight.w700 : FontWeight.w500, color: color),
+              ),
+            ],
+          ),
+        ),
+=======
+>>>>>>> Stashed changes
       ),
     );
   }

@@ -1,5 +1,5 @@
 /// Uniform exception type surfaced to the UI, so widgets never need to
-/// know whether an error came from Firebase, Firestore, or local storage.
+/// know whether an error came from the backend API or local storage.
 class AppException implements Exception {
   final String message;
   final String? code;
@@ -10,7 +10,10 @@ class AppException implements Exception {
   String toString() => message;
 }
 
-/// Maps raw FirebaseAuthException codes to friendly, user-facing copy.
+/// Maps auth error codes to friendly, user-facing copy. The backend
+/// already returns a friendly `message` for every error (see
+/// ApiClient._handle), so this is mainly kept as a fallback/reference for
+/// any locally-thrown AppException that only sets a `code`.
 class AuthErrorMapper {
   AuthErrorMapper._();
 

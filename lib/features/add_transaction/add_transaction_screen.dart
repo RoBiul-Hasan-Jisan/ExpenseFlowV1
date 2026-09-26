@@ -92,8 +92,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     final now = DateTime.now();
     final session = ref.read(sessionProvider);
 
-    // Receipts: authenticated users upload to Firebase Storage; demo mode
-    // keeps the local file path only (never touches Firebase Storage).
+    // Receipts: authenticated users upload to the backend; demo mode
+    // keeps the local file path only (never touches the network).
     var receiptUrl = _existingReceiptUrl;
     if (_receiptFile != null) {
       if (!session.isDemo && session.uid != null) {

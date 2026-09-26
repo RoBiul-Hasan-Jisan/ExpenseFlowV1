@@ -1,88 +1,95 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/budget_model.dart';
 import '../models/category_model.dart';
 import '../models/recurring_transaction_model.dart';
 import '../models/transaction_model.dart';
+import 'api_client.dart';
 
-/// All Firestore reads/writes for authenticated users live here.
-/// Every query is scoped under users/{uid}/... so one user can never
-/// read another user's financial records (also enforced server-side —
-/// see firestore.rules).
+/// All reads/writes for authenticated (non-demo) users live here, talking
+/// to the ExpenseFlow Node.js/MongoDB backend instead of Firestore. Every
+/// request carries the signed-in user's Firebase ID token (see
+/// ApiClient), and the server verifies it and scopes every query to that
+/// user — so one user can never read another's financial records.
+///
+/// Kept as `FirestoreService` (rather than renamed) so every repository
+/// that already depends on it needs zero changes.
+///
+/// `uid` parameters are still accepted for interface compatibility with
+/// the repositories, but are not needed to build the request — the
+/// backend derives the user from the Firebase ID token already attached
+/// by ApiClient.
 class FirestoreService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-
-  CollectionReference<Map<String, dynamic>> _transactions(String uid) =>
-      _db.collection('users').doc(uid).collection('transactions');
-
-  CollectionReference<Map<String, dynamic>> _budgets(String uid) =>
-      _db.collection('users').doc(uid).collection('budgets');
-
-  CollectionReference<Map<String, dynamic>> _recurring(String uid) =>
-      _db.collection('users').doc(uid).collection('recurring');
-
-  CollectionReference<Map<String, dynamic>> _categories(String uid) =>
-      _db.collection('users').doc(uid).collection('categories');
-
-  DocumentReference<Map<String, dynamic>> _profile(String uid) =>
-      _db.collection('users').doc(uid).collection('profile').doc('data');
-
-  DocumentReference<Map<String, dynamic>> _settings(String uid) =>
-      _db.collection('users').doc(uid).collection('settings').doc('data');
+  final ApiClient _api = ApiClient.instance;
 
   // ---- Transactions ----
-  Stream<List<TransactionModel>> watchTransactions(String uid) {
-    return _transactions(uid).orderBy('date', descending: true).snapshots().map(
-          (s) => s.docs.map((d) => TransactionModel.fromJson(d.data())).toList(),
-        );
+  Stream<List<TransactionModel>> watchTransactions(String uid) async* {
+    yield await _loadTransactions();
+  }
+
+  Future<List<TransactionModel>> _loadTransactions() async {
+    final data = await _api.get('/api/transactions');
+    final items = (data['items'] as List).cast<Map<String, dynamic>>();
+    return items.map(TransactionModel.fromJson).toList();
   }
 
   Future<void> upsertTransaction(String uid, TransactionModel txn) =>
-      _transactions(uid).doc(txn.id).set(txn.toJson());
+      _api.put('/api/transactions/${txn.id}', txn.toJson());
 
-  Future<void> deleteTransaction(String uid, String id) => _transactions(uid).doc(id).delete();
+  Future<void> deleteTransaction(String uid, String id) => _api.delete('/api/transactions/$id');
 
   // ---- Budgets ----
-  Stream<List<BudgetModel>> watchBudgets(String uid) {
-    return _budgets(uid).snapshots().map(
-          (s) => s.docs.map((d) => BudgetModel.fromJson(d.data())).toList(),
-        );
+  Stream<List<BudgetModel>> watchBudgets(String uid) async* {
+    yield await _loadBudgets();
   }
 
-  Future<void> upsertBudget(String uid, BudgetModel budget) => _budgets(uid).doc(budget.id).set(budget.toJson());
+  Future<List<BudgetModel>> _loadBudgets() async {
+    final data = await _api.get('/api/budgets');
+    final items = (data['items'] as List).cast<Map<String, dynamic>>();
+    return items.map(BudgetModel.fromJson).toList();
+  }
 
-  Future<void> deleteBudget(String uid, String id) => _budgets(uid).doc(id).delete();
+  Future<void> upsertBudget(String uid, BudgetModel budget) => _api.put('/api/budgets/${budget.id}', budget.toJson());
+
+  Future<void> deleteBudget(String uid, String id) => _api.delete('/api/budgets/$id');
 
   // ---- Recurring ----
-  Stream<List<RecurringTransactionModel>> watchRecurring(String uid) {
-    return _recurring(uid).snapshots().map(
-          (s) => s.docs.map((d) => RecurringTransactionModel.fromJson(d.data())).toList(),
-        );
+  Stream<List<RecurringTransactionModel>> watchRecurring(String uid) async* {
+    yield await _loadRecurring();
+  }
+
+  Future<List<RecurringTransactionModel>> _loadRecurring() async {
+    final data = await _api.get('/api/recurring');
+    final items = (data['items'] as List).cast<Map<String, dynamic>>();
+    return items.map(RecurringTransactionModel.fromJson).toList();
   }
 
   Future<void> upsertRecurring(String uid, RecurringTransactionModel item) =>
-      _recurring(uid).doc(item.id).set(item.toJson());
+      _api.put('/api/recurring/${item.id}', item.toJson());
 
-  Future<void> deleteRecurring(String uid, String id) => _recurring(uid).doc(id).delete();
+  Future<void> deleteRecurring(String uid, String id) => _api.delete('/api/recurring/$id');
 
   // ---- Categories ----
-  Stream<List<CategoryModel>> watchCategories(String uid) {
-    return _categories(uid).snapshots().map(
-          (s) => s.docs.map((d) => CategoryModel.fromJson(d.data())).toList(),
-        );
+  Stream<List<CategoryModel>> watchCategories(String uid) async* {
+    yield await _loadCategories();
+  }
+
+  Future<List<CategoryModel>> _loadCategories() async {
+    final data = await _api.get('/api/categories');
+    final items = (data['items'] as List).cast<Map<String, dynamic>>();
+    return items.map(CategoryModel.fromJson).toList();
   }
 
   Future<void> upsertCategory(String uid, CategoryModel category) =>
-      _categories(uid).doc(category.id).set(category.toJson());
+      _api.put('/api/categories/${category.id}', category.toJson());
 
-  Future<void> deleteCategory(String uid, String id) => _categories(uid).doc(id).delete();
+  Future<void> deleteCategory(String uid, String id) => _api.delete('/api/categories/$id');
 
   // ---- Settings / profile ----
-  Future<void> saveSettings(String uid, Map<String, dynamic> settings) => _settings(uid).set(settings);
+  Future<void> saveSettings(String uid, Map<String, dynamic> settings) => _api.put('/api/users/me/settings', settings);
 
   Future<Map<String, dynamic>?> loadSettings(String uid) async {
-    final doc = await _settings(uid).get();
-    return doc.data();
+    final data = await _api.get('/api/users/me/settings');
+    return data['settings'] as Map<String, dynamic>?;
   }
 
-  Future<void> saveProfile(String uid, Map<String, dynamic> profile) => _profile(uid).set(profile, SetOptions(merge: true));
+  Future<void> saveProfile(String uid, Map<String, dynamic> profile) => _api.patch('/api/users/me', profile);
 }

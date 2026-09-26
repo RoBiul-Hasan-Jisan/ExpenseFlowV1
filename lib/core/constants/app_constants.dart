@@ -5,6 +5,21 @@ class AppConstants {
   static const String appName = 'ExpenseFlow';
   static const String tagline = 'Manage your money. Understand your spending.';
 
+  /// Base URL of the ExpenseFlow Node.js/MongoDB backend (see
+  /// expenseflow-backend/). No trailing slash.
+  ///
+  /// - Android emulator          -> http://10.0.2.2:5000
+  /// - iOS simulator / desktop   -> http://localhost:5000
+  /// - Physical device           -> http://<your-computer-LAN-IP>:5000
+  /// - Production                -> https://api.yourapp.com
+  ///
+  /// Override at build/run time with:
+  ///   flutter run --dart-define=API_BASE_URL=http://192.168.1.20:5000
+  static const String apiBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://expenseflowv1-b.onrender.com',
+  );
+
   // Local storage keys
   static const String demoModeKey = 'expenseflow_demo_mode';
   static const String demoTransactionsKey = 'expenseflow_demo_transactions';
