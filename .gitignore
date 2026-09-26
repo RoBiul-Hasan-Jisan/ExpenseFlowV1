@@ -11,3 +11,5 @@ ios/Flutter/Flutter.podspec
 ios/Pods/
 lib/firebase_options.dart
 *.g.dart
+expenseflow-backend
+android/app/google-services.json
