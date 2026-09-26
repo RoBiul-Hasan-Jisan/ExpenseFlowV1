@@ -112,7 +112,7 @@ flutterfire configure
 firebase deploy --only firestore:rules,storage:rules
 
 # 4. Run it
-flutter run
+flutter run  
 ```
 
 **Demo Mode works immediately without any of the above** — the app is
